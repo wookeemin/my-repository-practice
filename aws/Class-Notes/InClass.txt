@@ -1,0 +1,37 @@
+Clarusway
+AWS&DevOps-DE
+
+
+- YAML & JSON Essentials
+- Introduction to CloudFormation
+
+VS Code Extensions for YAML an Cloudformation
+
+Name: YAML
+Id: redhat.vscode-yaml
+Description: YAML Language Support by Red Hat, with built-in Kubernetes syntax support
+Version: 0.20.0
+Publisher: Red Hat
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml
+
+Name: YAML :heart: JSON
+Id: hilleer.yaml-plus-json
+Description: Easily convert yaml to json and json to yaml
+Version: 1.8.0
+Publisher: Daniel Hillmann
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=hilleer.yaml-plus-json
+
+Name: CloudFormation Linter
+Id: kddejong.vscode-cfn-lint
+Description: AWS CloudFormation template Linter
+Version: 0.19.0
+Publisher: kddejong
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=kddejong.vscode-cfn-lint
+
+Name: CloudFormation Snippets
+Id: dsteenman.cloudformation-yaml-snippets
+Description: This extension adds snippets for all the AWS CloudFormation resources into Visual Studio Code.
+Version: 3.22.0
+Publisher: Danny Steenman
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=dsteenman.cloudformation-yaml-snippets
+

@@ -1,2 +1,1 @@
-# my-repository-practice
-My Repository for Practicing Portfolio Session
+# clarusway-aws-11-22
