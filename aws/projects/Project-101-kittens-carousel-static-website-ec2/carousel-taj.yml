@@ -1,16 +1,18 @@
+AWSTemplateFormatVersion: 2010-09-09
 Description: |
-  This CloudFormation Template for running Kittens Carousel Static Website on EC2.
-  Kittens Carousel Static Website will be deployed on Amazon Linux 2
-  EC2 Instance with custom security group which allows http connections on port 80
-  and ssh port 22 from anywhere. Kittens Carousel Static Website is downloaded from
+  This CloudFormation Template for running Kittens Carousel Static Website on EC2. 
+  Kittens Carousel Static Website will be deployed on Amazon Linux 2 
+  EC2 Instance with custom security group which allows http connections on port 80 
+  and ssh port 22 from anywhere. Kittens Carousel Static Website is downloaded from 
   my Public Github repository, then deployed on Apache Web Server.
+  
 Resources:
   rSecGroup:
     Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: wookee-101-carousel-sg
-      GroupName: wookee-101-carousel-sg
-      SecurityGroupIngress:
+    Properties: 
+      GroupDescription: wookee-cfn-101-carousel-sg
+      GroupName: wookee-cfn-101-carousel-sg
+      SecurityGroupIngress: 
         -   CidrIp: 0.0.0.0/0
             ToPort: 22
             FromPort: 22
@@ -19,4 +21,36 @@ Resources:
             ToPort: 80
             FromPort: 80
             IpProtocol: tcp
-# Outputs:
+  rWebserver:
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: ami-0022f774911c1d690
+      InstanceType: t2.micro
+      KeyName: wookee-mac1
+      SecurityGroupIds: 
+        - !GetAtt rSecGroup.GroupId
+      Tags: 
+        - Key: Name
+          Value: wookee-carousel-101-cfn
+      UserData: 
+        Fn::Base64: 
+          |
+            #! /bin/bash -x
+            yum update -y
+            yum install httpd -y
+            chmod +r /var/www/html
+            cd /var/www/html
+            FOLDER=https://raw.githubusercontent.com/altazbhanji/my-repository/main/Project-101-kittens-carousel-static-website-ec2/static-web
+            wget ${FOLDER}/index.html
+            wget ${FOLDER}/cat0.jpg
+            wget ${FOLDER}/cat1.jpg
+            wget ${FOLDER}/cat2.jpg
+            wget ${FOLDER}/cat3.png
+            systemctl enable httpd
+            systemctl start httpd          
+Outputs:
+  WebsiteURL:
+    Description: Kittens Carousel Application URL
+    Value: !Sub
+      - http://${PublicAddress}
+      - PublicAddress: !GetAtt rWebserver.PublicDnsName

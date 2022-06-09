@@ -28,4 +28,41 @@ Resources:
       #Tag is deleted cause no need
       # VpcId: String is deleted because do not use then, default choosen
 
+  rWebserver: 
+      Type: AWS::EC2::Instance
+      Properties: 
+      ImageId: ami-0022f774911c1d690 # copy from AWS console xxx
+      InstanceType: t2.micro
+      KeyName: wookee-mac1
+      SecurityGroupIds: 
+        - !GetAtt rSecGroup.GroupId 
+      Tags: 
+        - Key: Name 
+          Value: wookee-carousel-101-cfn 
+      UserData:  
+        Fn::Base64:
+        | 
+          #! /bin/bash -x
+
+          yum update -y
+          yum install httpd -y 
+          chmod +r /var/www/html
+
+          cd /var/www/html 
+
+          FOLDER= https://raw.githubusercontent.com/wookee/my-repository/main/Project-101-kittens-carousel-static-website-ec2/static-web #paste from raw index.html in Github
+          wget ${FOLDER}/index.html
+          wget ${FOLDER}/cat0.jpg
+          wget ${FOLDER}/cat1.jpg
+          wget ${FOLDER}/cat2.jpg
+          wget ${FOLDER}/cat3.png
+
+          systemctl enable httpd
+          sytemctl start httpd 
+
 Outputs:
+
+  WebsiteURL:
+    Description: Kittens Carousel Application URL 
+    Values: !GetAtt rWebserver.PublicDnsName # !Ref or !GetAtt (EC2)
+
