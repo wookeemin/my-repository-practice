@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: | #this pipe is important
+  This CloudFormation Template for running Kittens Carousel Static Website on EC2.
+  Kittens Carousel Static Website will be deployed on Amazon Linux 2
+  EC2 Instance with custom security group which allows http connections on port 80
+  and ssh port 22 from anywhere. Kittens Carousel Static Website is downloaded from
+  my Public Github repository, then deployed on Apache Web Server.
+
+Resources:
+
+  rSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: wookee-101-caroulsel-sg # copy from the description of security group 
+      GroupName: wookee-101-caroulsel-sg  # copy from the name of security group 
+      # deleted SecurityGroupEgress: 
+        # deleted - Egress
+      SecurityGroupIngress:  # copy from the aws website ingress
+        -   CidrIp: 0.0.0.0/0
+            FromPort: 22
+            IpProtocol: tcp
+            ToPort: 22
+        -   CidrIp: 0.0.0.0/0
+            FromPort: 80
+            IpProtocol: tcp
+            ToPort: 80
+
+      #Tag is deleted cause no need
+      # VpcId: String is deleted because do not use then, default choosen
+  
+Outputs:
