@@ -64,5 +64,10 @@ Outputs:
 
   WebsiteURL:
     Description: Kittens Carousel Application URL 
-    Values: !GetAtt rWebserver.PublicDnsName # !Ref or !GetAtt (EC2)
+    Values: !Sub #!GetAtt rWebserver.PublicDnsName # !Ref or !GetAtt (EC2)
+      - http://${PublicAddress}
+      - PublicAddress
 
+    !Sub 
+        - 'www.${Domain}'
+        - Domain: !ImportValue DomainName
