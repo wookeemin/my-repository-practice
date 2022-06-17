@@ -137,7 +137,7 @@ chmod +x string-operators.sh
 ```bash
 mkdir folder
 touch file 
-chmod 400 file
+chmod 400 file # 400 means readable permission
 ```
 
 Create a file and name it `file-operators.sh`
@@ -255,7 +255,7 @@ if [[ $number -gt 10 ]]
 then
   echo "Number is bigger than 10"
 
-  if (( $number % 2 == 1 ))
+  if (( $number % 2 == 1 ))  # % modulus means control  cf. % 2 ! == 1 and % 2 == 0 should be the opposite results of the % 2 == 1
   then
     echo "And is an odd number."
   else
@@ -331,7 +331,7 @@ read -p "Select an math operation
 " operation
 
 case $operation in
-  "1") 
+  "1") # no need to put " "
      echo "result= $(( $first_number + $second_number))"
   ;;
   "2")

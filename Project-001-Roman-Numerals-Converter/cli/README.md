@@ -15,6 +15,8 @@ aws --version
 ```bash
 aws configure
 ```
+  # get the CLI ID and key
+  # aws sts get-caller-identity 
 
 1. Create Security Group
 
@@ -23,7 +25,7 @@ aws ec2 create-security-group \
     --group-name roman_numbers_sec_grp \
     --description "This Sec Group is to allow ssh and http from anywhere"
 ```
-
+ # give you sec group id 
 - We can check the security Group with these commands
 ```bash
 aws ec2 describe-security-groups --group-names roman_numbers_sec_grp
@@ -56,18 +58,21 @@ aws ssm get-parameters --names /aws/service/ami-amazon-linux-latest/amzn2-ami-hv
 ```bash
 aws ssm get-parameters --names /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2 --query 'Parameters[0].[Value]' --output text
 ```
+# gives you ami id
 
 - we'll assign this latest AMI id to the LATEST_AMI environmental variable
 
 ```bash
 LATEST_AMI=$(aws ssm get-parameters --names /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2 --query 'Parameters[0].[Value]' --output text)
 ```
+# echo $LATEST_AMI 
 
 - Now we can run the instance with CLI command. (Do not forget to create userdata.sh under "/home/ec2-user/" folder before run this command)
 
 ```bash
 aws ec2 run-instances --image-id $LATEST_AMI --count 1 --instance-type t2.micro --key-name serdar --security-groups roman_numbers_sec_grp --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=roman_numbers}]' --user-data file:///Users/ODG/Desktop/git_dir/serdar-cw/porfolio_lesson_plan/week_6/CLI_solution/userdata.sh
 
+# aws ec2 run-instances --image-id $LATEST_AMI --count 1 --instance-type t2.micro --key-name wookee-mac1 --security-groups roman_numbers_sec_grp --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=roman_numbers}]' --user-data file:///Users/ODG/Desktop/git_dir/serdar-cw/porfolio_lesson_plan/week_6/CLI_solution/userdata.sh
 or
 
 aws ec2 run-instances \

@@ -1,1 +1,5 @@
-# clarusway-aws-11-22
+# AWS Projects
+
+List of projects within AWS workshop as follows;
+
+
