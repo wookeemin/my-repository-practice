@@ -245,7 +245,8 @@ done
 ./infinite-loop.sh
 ```
 
-## Part 5 - Select loops
+## Part 5 - Select loops 
+    # useful.....
 
 - The Select Loop generates a numbered menu from which users can select options. It's helpful when you need to ask the user to select one or more items from a list of options.
 
