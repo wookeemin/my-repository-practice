@@ -158,3 +158,11 @@ unzip sampledata.zip
   - Click `Run`. (Only the items that match your query criteria are returned from the `PostedBy-Message-Index`)
 
 - Take some time to explore other tables using the `DynamoDB` console: `ProductCatalog`, `Forum`, `Thread`.
+
+# to install brew on mac: run command 
+# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# to download website file on bash
+# 1) curl -o sampledata.zip https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/samples/sampledata.zip 
+# to install package on bash
+# (sudo) brew install wget 
