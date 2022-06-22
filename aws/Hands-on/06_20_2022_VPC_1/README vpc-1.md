@@ -121,7 +121,7 @@ VPC               :clarus-vpc-a
 Availability Zone :us-east-1c
 IPv4 CIDR block   :10.7.8.0/24
 
-- explain the subnet descriptions and reserved ips (why 251 instead of 256)
+- explain the subnet descriptions and reserved ips (why 251 instead of 256) #find out more????
 
 STEP 5: Route Tables
 
