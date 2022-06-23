@@ -1,17 +1,19 @@
 # Import Flask modules
 from flask import Flask, render_template, request
-from flaskext.mysql import MySQL
+from flaskext.mysql import MySQL # difference dependancies comapred to SQLite
+
+#password should be encrpted.: import boto3 , create ssm3, .... secret manager...
 
 # Create an object named app
 app = Flask(__name__)
 
-# Configure mysql database
-app.config['MYSQL_DATABASE_HOST'] = 'vincenzo.cbanmzptkrzf.us-east-1.rds.amazonaws.com'
+# Configure mysql database #have to provide host, username and password, DB name, specify port
+app.config['MYSQL_DATABASE_HOST'] = 'mysqlportfoliodb.cqersvev53vc.us-east-1.rds.amazonaws.com' # copy from endpoint of RDS, aws console
 app.config['MYSQL_DATABASE_USER'] = 'admin'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Clarusway_1'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'Clarusway_1' # have to be careful about the password in plain text. consider encrypted form.
 app.config['MYSQL_DATABASE_DB'] = 'clarusway'
-app.config['MYSQL_DATABASE_PORT'] = 3306
-mysql = MySQL()
+app.config['MYSQL_DATABASE_PORT'] = 3306 # default is 3306. can be changed make sure application is same with DB
+mysql = MySQL() # longer lines cf. 
 mysql.init_app(app)
 connection = mysql.connect()
 connection.autocommit(True)
@@ -28,8 +30,8 @@ CREATE TABLE users (
   PRIMARY KEY (username)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 """
-data = """
-INSERT INTO clarusway.users 
+data = """  # Insert command are same
+INSERT INTO clarusway.users  
 VALUES 
     ("Yusuf", "yusuf@amazon.com"),
     ("Betul", "betul@google.com"),
@@ -39,7 +41,7 @@ VALUES
     ("Tugba", "tugba@tesla.com"),
     ("Kemal", "kemal@samsung.com");
 """
-cursor.execute(drop_table)
+cursor.execute(drop_table) # db.session
 cursor.execute(users_table)
 cursor.execute(data)
 

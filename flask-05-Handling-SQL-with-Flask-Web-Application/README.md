@@ -34,11 +34,19 @@ At the end of the this hands-on training, students will be able to;
 - Part 3 - Install Python and Flask framework on Amazon Linux 2 EC2 Instance using RDS
 
 
+## Setup
+``` bash
+pip3 install flask-mysql
+pip3 install sqlalchemy
+pip3 install flask_sqlalchemy
+```
+
+
 ## Part 1 - Write a Sample Web Application with SQLite and database implementation on GitHub Repo
 
 - Write an application with database implementation using `SQLite` and save the complete code as `app-with-sqlite.py` under `hands-on/flask-05-handling-sql-on-ec2-linux2` folder.
 
-- configure required environmental variables for SQLite
+- configure required environmental variables for SQLite (check https://flask-sqlalchemy.palletsprojects.com/en/2.x/config)
 
 - drop users table if exists, create new users table and add some rows for sample
 
@@ -63,6 +71,26 @@ At the end of the this hands-on training, students will be able to;
 
 - Create an RDS database and use it as database of application
 
+- Go to the RDS console
+
+```bash
+Click create database
+Database Engine:            `MySQL`
+Database Version:           `Choose the default version selected by AWS`
+Template:                   `Choose Free Tier`
+DB Instance Identifier:     `MysqlPortfolioDB` #must be unique
+Master username:            `admin`
+Password:                   `Clarusway_1`
+Instance configuration:     `t2.micro` (enable "include previous generation classes")
+Enable autoscaling:         `Disable`
+Public Access:              `Yes` # normally never yes... in reality.
+VPC Security Group:         `Create New` (allow inbound traffic on port 3306) #wookee-rds-mysql-sg
+Initial DB Name:            `clarusway`
+Enable Automatic Backups:   `Disable`
+Enable Enhanced Monitoring: `Disable`
+Enable minor version upgr.: `Disable`
+```
+
 - Please write same application that was given in Part2 with MYSQL
 
 - commit your code and push it to your GitHub repo
@@ -78,16 +106,32 @@ At the end of the this hands-on training, students will be able to;
 
 - Connect to your instance with SSH.
 
-- Update the installed packages and package cache on your instance.
+- Update the installed packages and package cache on your instance. (`sudo yum update -y`)
 
-- Install `Python 3` packages.
+- Install `Python 3` packages (`sudo yum install python3 -y`).
 
 - Check the python3 version
 
-- Install `Python 3 Flask` framework.
+- Install `Python 3 Flask` framework. (`sudo pip3 install flask`)
 
-- Install `flask_mysql`.
+- Install `flask_mysql`. (`sudo pip3 install flask_mysql`)
 
-- Run application with Python
+- Install `Git` (`sudo yum install git -y`) # no need
+
+- cd ~
+
+- wget <app-with-mysql.py path> # copy from git hub my repository folder. raw and copy URL.
+
+- mkdir templates
+
+- cd templates
+
+- wget <add-email.html path> # copy from git hub my repository folder. raw and copy URL.
+
+- wget <emails.html path> # copy from git hub my repository folder. raw and copy URL.
+
+- cd ~
+
+- Run application with Python (sudo python3 app-with-mysql.py)
 
 

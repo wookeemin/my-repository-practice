@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy # make all library are installed. (see the README file for command lines)
 
 app = Flask(__name__)
 
-# - configure required environmental variables for SQLite
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./email.db'
+# - configure required environmental variables for SQLite # configureation MUST in in the py. ok to be in ssm3.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./email.db' # specifiy file name
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# - drop users table if exists, create new users table and add some rows for sample
+# - DB. drop users table if exists, create new users table and add some rows for sample
 drop_table = 'DROP TABLE IF EXISTS users;'
 users_table = """ 
 CREATE TABLE users(
@@ -26,13 +26,13 @@ VALUES
     ("Tugba", "tugba@tesla.com"),
     ("Kemal", "kemal@samsung.com");
 """
+# this is only for initialization, added data will be stored in database file. e.g., here is in database.png
 
-
-# - Execute sql commands and commit them
+# - Execute sql commands and commit them # corresponding above DB
 db.session.execute(drop_table)
 db.session.execute(users_table)
 db.session.execute(data)
-db.session.commit()
+db.session.commit() # always commit at the end
 
 # - Write a function named `find_emails` which find emails using keyword from the user table in the db,
 # - and returns result as tuples `(name, email)`.
@@ -62,11 +62,11 @@ def insert_email(name,email):
         VALUES ('{name}', '{email}');
         """
         result = db.session.execute(insert)
-        db.session.commit()
+        db.session.commit() # must commit at the end
         response = f"User {name} and {email} have been added successfully"
     else:
         response = f"User {name} already exist"
-    return response
+    return response # in a form of string
 
 
 # - Write a function named `emails` which finds email addresses by keyword using `GET` and `POST` methods,
@@ -84,7 +84,7 @@ def emails():
 
 # - Write a function named `add_email` which inserts new email to the database using `GET` and `POST` methods,
 # - using template files named `add-email.html` given under `templates` folder
-# - and assign to the static route of ('/add')
+# - and assign to the static route of ('/add') 
 @app.route('/add', methods=['GET', 'POST'])
 def add_email():
     if request.method == 'POST':
@@ -96,7 +96,7 @@ def add_email():
         return render_template('add-email.html', show_result=False)
 
 
-# - Add a statement to run the Flask application which can be reached from any host on port 80.
+# - Add a statement to run the Flask application which can be reached from any host on port 80.# make sure it ends with prodcution mode
 if __name__=='__main__':
-    #app.run(debug=True)
-    app.run(host='0.0.0.0', port=80)
+    app.run(debug=True) # deleted # in front of app.run...
+    #app.run(host='0.0.0.0', port=80)
