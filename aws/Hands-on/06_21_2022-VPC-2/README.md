@@ -22,6 +22,8 @@ Tag             :
     Value       : Private EC2
 ```
 - show that you can't connect directly to private instance from local with ssh connection.
+# wookees-Air:Downloads wookeemin$ ssh -i "wookee-mac1.cer" ec2-user@10.7.5.198
+# ssh: connect to host 10.7.5.198 port 22: Network is unreachable
 
 - Configure Public instance (Bastion Host).
 
@@ -59,26 +61,32 @@ Rules        : TCP --- > 22 ---> Anywhere
 - Enable ssh-agent (start the ssh-agent in the background)
 
 ```bash
-eval "$(ssh-agent)"
+eval "$(ssh-agent)" #Agent pid 4780
 ```
 -  Add the your private ssh key to the ssh-agent.
 
 ```bash
-ssh-add ./[your pem file name]
+ssh-add ./[your pem file name] #ssh-add ./wookee-mac1.cer 
+#'Identity added: ./wookee-mac1.cer (./wookee-mac1.cer)
 ```
 - connect to the ec2-in-az1b-public-sn instance in public subnet. 
 
 - if we don't want to create a config file, we have another option, using -A flag with the ssh command. `-A` option `enables forwarding of the authentication agent connection`. It means that, it forwards your SSH auth schema to the remote host. So you can use SSH over there as if you were on your local machine.
 
 ```bash
-ssh -A ec2-user@ec2-3-88-199-43.compute-1.amazonaws.com
+ssh -A ec2-user@ec2-3-88-199-43.compute-1.amazonaws.com 
+#ssh -A "wookee-mac1.cer" ec2-user@ec2-54-210-109-212.compute-1.amazonaws.com just copy from ec2 connect
+#ssh -A ec2-user@54.210.109.212 
 ```
 - once logged into the ec2-in-az1b-public-sn (bastion host/jump box), connect to 
 the ec2-in-az1b-private-sn instance in the private subnet 
 ```bash
 ssh ec2-user@[Your private EC2 private IP]
+# ssh ec2-user@10.7.5.198
 ```
 - Show connection of the private EC2 over the Bastion Host
+
+# check the internet connectivity. curl www.google.com , but it will be no connection for now.
 
 ### Part 3 - Creating NAT Gateway
 
@@ -128,7 +136,7 @@ Target ----> Nat Gateway ----> clarus-nat-gateway
 
 - go to private instance via terminal using bastion host
 
-- try to ping www.google.com and show response.
+- try to ping www.google.com and show response. # or curl www.google.com 
 
 - Go to VPC console on left hand menu and select Nat Gateway tab
 
@@ -148,11 +156,11 @@ STEP 1: Create NAT Instance
 AMI             : ami-00a36856283d67c39 (Nat Instance)
 Instance Type   : t2.micro
 Network         : clarus-vpc-a
-Subnet          : clarus-az1a-public-subnet
+Subnet          : clarus-az1a-public-subnet # should be public
 Security Group  : 
     Sec.Group Name : Public Sec.group
     Rules          : TCP ---> 22 ---> Anywhere
-                   : All ICMP IPv4  ---> Anywhere
+                   : All ICMP IPv4  ---> Anywhere #
 
 Tag             :
     Key         : Name
