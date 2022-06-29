@@ -2,40 +2,43 @@
 
 # 1.Create Sec.Groups:
 
-   Wordpress-BastionHost-SG: In bound : "SSH 22, HTTP 80,   > anywhere(0:/00000)"
-   MariaDB-SG: In bound :"Mysql 3306, SSH 22  > anywhere (0:/00000)"
+   Wordpress-BastionHost-SG: In bound : "SSH 22, HTTP 80,   > anywhere(0:/00000)" # deleted ans select vpc as clarus-vpc-a
+   MariaDB-SG: In bound :"Mysql/Aurora 3306, SSH 22  > anywhere (0:/00000)"
    NAT-SG: In bound : "HTTP, HTTPS, SSH 22  > anywhere (0:/00000)" # No need for NAT-SG if you use NAT Gateway.
 
 # 2.Create EC2 that is installed LAMP with user data seen below for "Wordpress app in Public Subnet 1b"
-
+name: WordPress-BastionHost
+ Network settings
    VPC: "clarus-vpc-a"
    Subnet: "clarus-az1b-public-subnet"
+   auto-assign public ip: enable
    Sec Group: "Wordpress-BastionHost-SG"
    User Data:
    
 #!/bin/bash
 
-yum update -y
-amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
-yum install -y httpd
+yum update -y #update linuk stack
+amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2 # use aws extra install commant for updating. specify the package.
+yum install -y httpd #install apache webser
 systemctl start httpd
 systemctl enable httpd
-wget https://wordpress.org/latest.tar.gz
-tar -xzf latest.tar.gz
-sudo cp -r wordpress/* /var/www/html/
-cd /var/www/html/
-cp wp-config-sample.php wp-config.php
-chown -R apache /var/www
-chgrp -R apache /var/www
-chmod 775 /var/www
-find /var/www -type d -exec sudo chmod 2775 {} \;
-find /var/www -type f -exec sudo chmod 0664 {} \;
-systemctl restart httpd
+wget https://wordpress.org/latest.tar.gz #downloading zip package, wordpress
+tar -xzf latest.tar.gz 
+sudo cp -r wordpress/* /var/www/html/ # copy command to var www html default directory (paste web contents) # sudo not necessary, but sometimes errors showed and try to eliminate the potentials.
+cd /var/www/html/ #change directory
+cp wp-config-sample.php wp-config.php # copy wordpress sample.php file and rename it as wp-config.php
+chown -R apache /var/www #change ownership of directory to apache
+chgrp -R apache /var/www # change group to apache
+chmod 775 /var/www # change permission to 775 user and group have all previleges
+find /var/www -type d -exec sudo chmod 2775 {} \; # execute changemod command , 775 (user,group,other user)
+find /var/www -type f -exec sudo chmod 0664 {} \; # execuete 
+systemctl restart httpd #restart apached server in order to configure.
 
 # 3.Create MariaDB ec2 instance in Private Subnet 1b
-
+name: MariaDB
    VPC: "clarus-vpc-a"
    Subnet: "clarus-az1b-private-subnet"
+   auto assign public ip: diasble
    Sec Group: "MariaDB-SG"
    User Data:
 
@@ -48,7 +51,29 @@ systemctl enable mariadb
 
 
 # 4. Control the instance status.
+# in securrity group: change mariadb nettwork inbound setting. edit and delete existing rules. add ssh, custom, wordpress.sg
+# add http, custom and wordpress-sg 
+# using ssh, sonnect to wordpress instance in vsc.
+#wookees-Air:Downloads wookeemin$ eval "$(ssh-agent)"
+wookees-Air:Downloads wookeemin$ eval "$(ssh-agent)"
+Agent pid 23453
+wookees-Air:Downloads wookeemin$ ssh-add wookee-mac1.cer
+Identity added: wookee-mac1.cer (wookee-mac1.cer)
+wookees-Air:Downloads wookeemin$ ssh -A -i "wookee-mac1.cer" ec2-user@ec2-54-163-54-173.compute-1.amazonaws.com
+Last login: Tue Jun 28 18:26:26 2022 from p5dd14d93.dip0.t-ipconnect.de
 
+[ec2-user@ip-10-7-4-217 ~]$ cd
+[ec2-user@ip-10-7-4-217 ~]$ cd .ssh
+# eval "$(ssh-agent)" store pem key and transfer to another instance
+
+#Connect to mariadb private 
+[ec2-user@ip-10-7-4-217 ~]$ ssh-add-l
+-bash: ssh-add-l: command not found
+[ec2-user@ip-10-7-4-217 ~]$ ssh ec2-user@10.7.5.43
+
+#[ec2-user@ip-10-7-5-43 ~]$ ping google.com
+# PING google.com (172.217.1.206) 56(84) bytes of data. no connection to Internet
+thus, install 
 # 5. To establish a more secure connection between the Wordpress instance and the DB instance, configure  
 # the DB instance security group inbound rule to ensure it only permits Wordpress instance security group to access.
 
