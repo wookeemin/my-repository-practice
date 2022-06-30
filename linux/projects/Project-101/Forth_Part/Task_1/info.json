@@ -17,7 +17,7 @@
                 "Tenancy": "default"
             },
             "PrivateDnsName": "ip-172-31-82-220.ec2.internal",
-            "PrivateIpAddress": "172.31.82.220",
+            "PrivateIpAddress": "172.31.82.220", #replace private IP
             "ProductCodes": [],
             "PublicDnsName": "",
             "State": {
