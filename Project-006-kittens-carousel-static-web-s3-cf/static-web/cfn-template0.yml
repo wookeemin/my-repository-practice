@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+    Cloudformation Template for kittens carousel static website deploy on s3 through
+    cloudfront and route 53
+Parameters:
+  KittensDomainName:
+    Description: DNS Name of existing Amazon Route 53 hosted zone. e.g. clarusway.us
+    Type: String
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-) #mobz? system check
+Resources:
+  KittensBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      BucketName: !Ref KittensDomainName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      WebsiteConfiguration:
+        IndexDocument: "String" # error. change to index.html
+#Step1: Add KittenBucketPolicy
+#Step2: Add KittenCertificate
+#Step3: Add DomainNaem under the Parameters
+#Step4: Add KittenCloudFront , it is important for capstone project. only modify for static website.
+#Step5: Add KittenDomainName (Route53 hosted zones. create record under wookeemin.com)
+#Step6: Add 
+#Outputs:

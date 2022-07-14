@@ -1,0 +1,87 @@
+
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+    Cloudformation Template for kittens carousel static website deploy on s3 through
+    cloudfront and route 53
+Parameters:
+  KittensDomainName:
+    Description: DNS Name of application e.g. kittens.clarusway.us
+    Type: String
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+  DomainName:
+    Description: NS Name of existing Amazon Route 53 hosted zone. eg clarusway.us
+    Type: AWS::Route53::HostedZone::Id
+Resources:
+  KittensBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref KittensDomainName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      WebsiteConfiguration:
+        IndexDocument: index.html
+  KittensBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref KittensBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: PublicReadGetObject
+          Effect: Allow
+          Principal: "*"
+          Action: s3:GetObject
+          Resource: !Sub ${KittensBucket.Arn}/*
+  KittensCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      CertificateTransparencyLoggingPreference: ENABLED
+      DomainName: !Ref KittensDomainName
+      DomainValidationOptions:
+      -   DomainName: !Ref KittensDomainName
+          HostedZoneId: !Ref DomainName
+      ValidationMethod: DNS
+  KittensCloudfront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Ref KittensDomainName
+        Comment: Cloudfront Distribution pointing to Kittens S3 bucket
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          ForwardedValues:
+            QueryString: true
+          TargetOriginId: KittensOrigin
+          ViewerProtocolPolicy: redirect-to-https #error origin?
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        Origins:
+        - DomainName: !Select [ 2, !Split ["/", !GetAtt KittensBucket.WebsiteURL]]
+          Id: KittensOrigin
+          CustomOriginConfig:
+            OriginProtocolPolicy: match-viewer
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          AcmCertificateArn: !Ref KittensCertificate
+          SslSupportMethod: sni-only
+  KittensDNSName:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref DomainName
+      RecordSets:
+      -   AliasTarget:
+            DNSName: !GetAtt KittensCloudfront.DomainName
+            HostedZoneId: Z2FDTNDATAQYW2
+          Name: !Ref KittensDomainName
+          Type: A
+#Outputs:
+#### You have to change http and https on CloudFront-> Distribution -> 
+#### --> select one and click. go to Behaviour, then Edit button -> 'Viewer protocl policy' change to HTTP and HTTPS.
